@@ -1,9 +1,9 @@
 package com.epicode.Progetto21.entities;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+
 
 @Entity
+@Table(name = "\"user\"")
 public class User {
 
     @Id
@@ -41,7 +41,7 @@ public class User {
     }
 
     public enum Role {
-        USER, ADMIN
+        USER, ORGANIZZATORE_EVENTI
     }
 
 }

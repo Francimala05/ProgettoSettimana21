@@ -1,9 +1,9 @@
 package com.epicode.Progetto21.config;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
@@ -12,14 +12,15 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
+                .csrf(csrf -> csrf.disable())  // Disabilita CSRF
                 .authorizeHttpRequests(authorizeRequests ->
                         authorizeRequests
-                                .requestMatchers("/login", "/register", "/home").permitAll() // Pagine pubbliche
-                                .anyRequest().authenticated() // Tutte le altre richiedono autenticazione
+                                .requestMatchers("/auth/register", "/auth/login").permitAll()
+                                .requestMatchers("/event/**").hasAuthority("ROLE_ORGANIZZATORE_EVENTI")
+                                .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
-                        .loginPage("/login") // Pagina di login personalizzata
-                        .permitAll()
+                        .disable()
                 )
                 .logout(logout -> logout
                         .permitAll()
@@ -28,10 +29,10 @@ public class SecurityConfig {
         return http.build();
     }
 
+
+
     @Bean
-    public PasswordEncoder passwordEncoder() {
+    public BCryptPasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
-
-
 }

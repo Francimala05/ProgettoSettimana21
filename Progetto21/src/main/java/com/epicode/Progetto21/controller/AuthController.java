@@ -1,6 +1,8 @@
 package com.epicode.Progetto21.controller;
+
 import com.epicode.Progetto21.entities.User;
 import com.epicode.Progetto21.repository.UserRepository;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,15 +19,21 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public String register(@RequestBody User user) {
+    public ResponseEntity<String> register(@RequestBody User user) {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
+
+        if (user.getRole() == null) {
+            user.setRole(User.Role.USER);
+        }
+
         userRepository.save(user);
-        return "User registered successfully!";
+        return ResponseEntity.ok("Utente registrato con successo!");
     }
+
+
 
     @PostMapping("/login")
-    public String login() {
-        return "Login successful!";
+    public ResponseEntity<String> login() {
+        return ResponseEntity.ok("Login effettuato!");
     }
 }
-
